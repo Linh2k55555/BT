@@ -25,11 +25,11 @@ connectDB(process.env.DB_URI);
 
 app.use("/api", authRouter);
 app.use("/api", productRouter);
-
+//đăng ký
 app.get("/signup", (req, res) => {
     res.render("signup", { errors: [] });
 });
-
+//đăng nhập
 app.get("/signin", (req, res) => {
     const message = req.query.message || "";
     res.render("signin", { message });
