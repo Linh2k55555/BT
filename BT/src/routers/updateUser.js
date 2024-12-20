@@ -1,12 +1,9 @@
 import express from "express";
-import { renderUpdateInfoPage, updateUser } from "../controllers/auth.js";
+import { renderUpdateUserPage, updateUser } from "../controllers/updateUser.js";
 
 const router = express.Router();
 
-// Route hiển thị trang cập nhật thông tin
-router.get("/update-info", renderUpdateInfoPage);
-
-// Route xử lý cập nhật thông tin
-router.post("/update-info", updateUser);
+router.get("/update-user", renderUpdateUserPage); // Hiển thị form cập nhật
+router.post("/update-user", updateUser); // Xử lý cập nhật mật khẩu
 
 export default router;

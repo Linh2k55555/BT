@@ -34,24 +34,24 @@ export const signup = async (req, res) => {
     }
 };
 
-// Đăng nhập
+// Đăng nhập// Đăng nhập
 export const signin = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Tìm người dùng theo email
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).render("signin", { message: "Email không tồn tại." });
         }
 
-        // So sánh mật khẩu
         const isPasswordValid = await bcryptjs.compare(password, user.password);
         if (!isPasswordValid) {
             return res.status(400).render("signin", { message: "Mật khẩu không chính xác." });
         }
 
-        // Chuyển hướng tới home2 với thông tin người dùng
+        // Lưu userId vào session
+        req.session.userId = user._id;
+
         res.render("home2", { username: user.username, products: [] });
     } catch (err) {
         console.error("Lỗi trong quá trình đăng nhập:", err);
@@ -59,63 +59,40 @@ export const signin = async (req, res) => {
     }
 };
 
-// Cập nhật thông tin người dùng
-export const updateUser = async (req, res) => {
-    const { email, password, confirmPassword } = req.body;
+// Thay đổi mật khẩu
+export const updatePassword = async (req, res) => {
+    const { password, confirmPassword } = req.body;
+
+    if (!req.user) {
+        return res.status(401).send("Bạn chưa đăng nhập.");
+    }
+
+    if (password !== confirmPassword) {
+        return res.status(400).render("update-info", {
+            user: req.user,
+            errors: ["Mật khẩu và xác nhận mật khẩu không khớp."],
+        });
+    }
 
     try {
-        // Lấy ID của user từ req.user
-        const userId = new mongoose.Types.ObjectId(req.user._id);
+        const hashedPassword = await bcryptjs.hash(password, 10);
 
-        // Kiểm tra nếu mật khẩu và xác nhận mật khẩu không khớp
-        if (password !== confirmPassword) {
-            return res.status(400).render("update-info", {
-                user: req.user,
-                errors: ["Mật khẩu và xác nhận mật khẩu không khớp."],
-            });
-        }
+        await User.findByIdAndUpdate(req.user._id, { password: hashedPassword });
 
-        // Dữ liệu cập nhật
-        const updateData = { email }; // Chỉ cập nhật email
-        if (password) {
-            updateData.password = await bcryptjs.hash(password, 10); // Hash mật khẩu mới
-        }
-
-        // Cập nhật thông tin người dùng
-        await User.findByIdAndUpdate(userId, updateData);
-
-        // Trả về trang home2.ejs với thông báo thành công
         res.render("home2", {
-            username: req.user.username, // Giữ nguyên username
-            message: "Thông tin của bạn đã được cập nhật thành công!",
+            username: req.user.username,
+            message: "Mật khẩu của bạn đã được thay đổi thành công!",
             products: [],
         });
     } catch (error) {
-        console.error("Lỗi khi cập nhật thông tin người dùng:", error);
+        console.error("Lỗi khi thay đổi mật khẩu:", error);
         res.status(500).render("update-info", {
             user: req.user,
             errors: ["Đã xảy ra lỗi, vui lòng thử lại sau."],
         });
     }
 };
-export const renderUpdateInfoPage = async (req, res) => {
-    try {
-        // Lấy thông tin người dùng từ `req.user`
-        const user = req.user;
 
-        // Kiểm tra nếu không có thông tin người dùng
-        if (!user) {
-            return res.status(400).redirect("/signin?message=Vui lòng đăng nhập trước!");
-        }
-
-        res.render("update-info", { user, errors: [] });
-    } catch (error) {
-        console.error("Lỗi khi hiển thị trang cập nhật thông tin:", error);
-        res.status(500).send("Đã xảy ra lỗi, vui lòng thử lại sau.");
-    }
-};
-
-    
 // Đăng xuất
 export const logout = (req, res) => {
     try {
