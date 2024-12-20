@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh sách sản phẩm</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        header {
+            background-color: rgba(0, 0, 0, 0.7);
+            width: 100%;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        header .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        header .user-actions a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        header .user-actions a:hover {
+            text-decoration: underline;
+        }
+        header .user-actions img {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .container {
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+        .product {
+            border-bottom: 1px solid #fff;
+            padding: 10px 0;
+        }
+        .product:last-child {
+            border-bottom: none;
+        }
+        .product h2 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+        .product p {
+            margin: 5px 0 0;
+            font-size: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Danh sách sản phẩm</h1>
+        <div class="user-actions">
+            <span>Chào, <%= username %>!</span>
+            <a href="/update-info">
+                <img src="../src/image/1.png" alt="Thay đổi thông tin người dùng" title="Thay đổi thông tin người dùng">
+            </a>
+            <a href="/logout">Đăng xuất</a>
+        </div>
+    </header>
+    <div class="container">
+        <% if (typeof products !== 'undefined' && products.length > 0) { %>
+            <% products.forEach(product => { %>
+                <div class="product">
+                    <h2><%= product.name %></h2>
+                    <p>Giá: <%= product.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) %></p>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <p>Không có sản phẩm nào được tìm thấy.</p>
+        <% } %>
+    </div>
+</body>
+</html>

@@ -16,9 +16,12 @@
         "express": "^4.21.2",
         "joi": "^17.13.3",
         "mongoose": "^8.8.4",
-        "morgan": "^1.10.0"
+        "morgan": "^1.10.0",
+        "nodemailer": "^6.9.16",
+        "vite-plugin-commonjs": "^0.10.4"
     },
     "devDependencies": {
+        "@rollup/plugin-commonjs": "^28.0.2",
         "vite-plugin-node": "^4.0.0"
     }
 }
