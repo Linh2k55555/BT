@@ -5,12 +5,9 @@ import productRouter from "./routers/product.js";
 import authRouter from "./routers/auth.js";
 import { connectDB } from "./config/db.js";
 import dotenv from "dotenv";
-import morgan from "morgan";
 import homeRouter from "./routers/home.js";
-import fs from "fs";
 import logoutRouter from "./routers/logout.js";
 import updateUserRouter from "./routers/updateUser.js"; // Import chỉ một lần
-import mongoose from "mongoose";
 import session from "express-session"; // Import express-session
 import MongoStore from "connect-mongo"; // Import connect-mongo để lưu session
 
