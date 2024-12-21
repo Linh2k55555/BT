@@ -1,4 +1,3 @@
-// src/controllers/updateUser.js
 import User from "../model/user.js";
 import bcryptjs from "bcryptjs";
 

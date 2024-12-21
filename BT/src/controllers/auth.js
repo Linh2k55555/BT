@@ -34,7 +34,7 @@ export const signup = async (req, res) => {
     }
 };
 
-// Đăng nhập// Đăng nhập
+// Đăng nhập
 export const signin = async (req, res) => {
     const { email, password } = req.body;
 
