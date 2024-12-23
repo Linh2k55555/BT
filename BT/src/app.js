@@ -19,7 +19,7 @@ const __dirname = path.dirname(__filename);
 const app = express();
 
 // Định tuyến tệp tĩnh
-app.use("/src/image", express.static(path.join(__dirname, "image")));
+app.use("/src/images", express.static(path.join(__dirname, "images")));
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "../views"));
