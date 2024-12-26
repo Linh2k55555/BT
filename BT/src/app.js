@@ -10,6 +10,7 @@ import logoutRouter from "./routers/logout.js";
 import updateUserRouter from "./routers/updateUser.js"; // Import chỉ một lần
 import session from "express-session"; // Import express-session
 import MongoStore from "connect-mongo"; // Import connect-mongo để lưu session
+import updateUserRouter from "./routers/auth.js"
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.set("views", path.join(__dirname, "../views"));
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 
 // Cấu hình session
 const sessionMiddleware = session({
@@ -50,6 +52,7 @@ app.use("/api", authRouter);
 app.use("/api", productRouter);
 app.use("/", logoutRouter);
 app.use("/user", updateUserRouter);
+app.use("/", updateUserRouter);
 
 // Đăng ký
 app.get("/signup", (req, res) => {

@@ -23,28 +23,30 @@
             justify-content: space-between;
             align-items: center;
         }
-        header h1 {
-            margin: 0;
-            font-size: 1.5rem;
-        }
-        header .user-actions {
+        header .welcome-section {
             display: flex;
             align-items: center;
             gap: 15px;
         }
-        header .user-actions a {
+        header .welcome-section span {
+            font-size: 1rem;
+        }
+        header .action-buttons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        header .action-buttons a {
+            padding: 8px 12px;
+            background-color: #007bff;
             color: #fff;
+            border-radius: 5px;
             text-decoration: none;
+            font-size: 0.9rem;
             font-weight: bold;
         }
-        header .user-actions a:hover {
-            text-decoration: underline;
-        }
-        header .user-actions img {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            cursor: pointer;
+        header .action-buttons a:hover {
+            background-color: #0056b3;
         }
         .container {
             margin-top: 20px;
@@ -70,21 +72,30 @@
             margin: 5px 0 0;
             font-size: 1rem;
         }
+        .message {
+            color: green;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1>Danh sách sản phẩm</h1>
-        <div class="user-actions">
+        <div class="welcome-section">
             <span>Chào, <%= username %>!</span>
-            <a href="/update-info">
-                <img src="../src/images/1.png" alt="Thay đổi thông tin người dùng" title="Thay đổi thông tin người dùng">
-            </a>
+        </div>
+        <div class="action-buttons">
+            <a href="/update-info">Đổi mật khẩu</a>
+            <a href="/update-user">Đổi thông tin</a>
             <a href="/logout">Đăng xuất</a>
         </div>
     </header>
     <div class="container">
-        <% if (typeof products !== 'undefined' && products.length > 0) { %>
+        <% if (message) { %>
+            <div class="message"><%= message %></div>
+        <% } %>
+
+        <% if (products && products.length > 0) { %>
             <% products.forEach(product => { %>
                 <div class="product">
                     <h2><%= product.name %></h2>
