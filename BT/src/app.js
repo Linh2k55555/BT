@@ -7,19 +7,18 @@ import { connectDB } from "./config/db.js";
 import dotenv from "dotenv";
 import homeRouter from "./routers/home.js";
 import logoutRouter from "./routers/logout.js";
-import updateUserRouter from "./routers/updateUser.js"; // Import chỉ một lần
-import session from "express-session"; // Import express-session
-import MongoStore from "connect-mongo"; // Import connect-mongo để lưu session
+import updateUserRouter from "./routers/updateUser.js"; 
+import session from "express-session";
+import MongoStore from "connect-mongo"; 
 import updateUserRouter from "./routers/auth.js"
 
 dotenv.config();
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-
 const app = express();
 
-
+///view
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "../views"));
 
