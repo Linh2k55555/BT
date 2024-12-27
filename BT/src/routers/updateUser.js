@@ -1,9 +1,10 @@
 import express from "express";
 import { renderUpdateUserPage, updateUser } from "../controllers/updateUser.js";
+import { isAuthenticated } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.get("/update-user", renderUpdateUserPage); // Hiển thị form cập nhật
-router.post("/update-user", updateUser); // Xử lý cập nhật mật khẩu
+router.get("/update-user",isAuthenticated,  renderUpdateUserPage); // Hiển thị form cập nhật
+router.post("/update-user",isAuthenticated, updateUser); // Xử lý cập nhật mật khẩu
 
 export default router;

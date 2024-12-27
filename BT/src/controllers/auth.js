@@ -40,31 +40,37 @@ export const signin = async (req, res) => {
     const { email, password } = req.body;
 
     try {
-        // Tìm người dùng theo email
         const user = await User.findOne({ email });
         if (!user) {
-            return res.status(400).render("signin", { message: "Email không tồn tại." });
+            return res.status(400).render("signin", {
+                message: "Email không tồn tại.",
+                email, // Giữ lại email đã nhập
+            });
         }
 
-        // Kiểm tra mật khẩu
         const isPasswordValid = await bcryptjs.compare(password, user.password);
         if (!isPasswordValid) {
-            return res.status(400).render("signin", { message: "Mật khẩu không chính xác." });
+            return res.status(400).render("signin", {
+                message: "Mật khẩu không chính xác.",
+                email, // Giữ lại email đã nhập
+            });
         }
 
-        // Lấy thông tin người dùng
-        const username = user.username;
-        // Render trang home2 với thông tin người dùng
-        res.render("home2", {
-            username,
-            products: await Product.find(), // Lấy danh sách sản phẩm
-            message: req.query.message || "", // Truyền thông báo nếu có
-        });
+        // Lưu thông tin vào session
+        req.session.userId = user._id;
+        req.session.username = user.username;
+
+        res.redirect("/home2");
     } catch (err) {
         console.error("Lỗi trong quá trình đăng nhập:", err);
-        res.status(500).send("Đã xảy ra lỗi, vui lòng thử lại sau.");
+        res.status(500).render("signin", {
+            message: "Đã xảy ra lỗi, vui lòng thử lại sau.",
+            email, // Đảm bảo email được giữ lại
+        });
     }
 };
+
+
 
 
 
@@ -125,36 +131,37 @@ export const logout = (req, res) => {
 };
 
 
-export const renderUpdateUserPage = async (req, res) => {
-    try {
-        const user = await User.findById(req.session.user._id); // Lấy thông tin user từ session
-        res.render("update-user", { user, errors: [] });
-    } catch (error) {
-        console.error("Lỗi khi hiển thị trang cập nhật thông tin:", error);
-        res.status(500).send("Đã xảy ra lỗi, vui lòng thử lại sau.");
-    }
-};
+// export const renderUpdateUserPage = async (req, res) => {
+//     try {
+//         const user = await User.findById(req.session.user._id); // Lấy thông tin user từ session
+//         res.render("update-user", { user, errors: [] });
+//     } catch (error) {
+//         console.error("Lỗi khi hiển thị trang cập nhật thông tin:", error);
+//         res.status(500).send("Đã xảy ra lỗi, vui lòng thử lại sau.");
+//     }
+// };
 
 // Hiển thị trang đổi thông tin người dùng
-export const renderUpdateInfo = async (req, res) => {
+export const renderUpdateUserPage = async (req, res) => {
     try {
-        // Kiểm tra nếu không có thông tin người dùng trong session
-        if (!req.session || !req.session.user) {
-            return res.status(401).send("Bạn chưa đăng nhập.");
+        // Kiểm tra xem người dùng đã đăng nhập hay chưa
+        if (!req.session.userId) {
+            return res.redirect("/signin");
         }
 
         // Lấy thông tin người dùng từ cơ sở dữ liệu
-        const user = await User.findById(req.session.user._id);
-
-        // Kiểm tra nếu không tìm thấy người dùng
+        const user = await User.findById(req.session.userId);
         if (!user) {
             return res.status(404).send("Không tìm thấy thông tin người dùng.");
         }
 
-        // Truyền thông tin người dùng vào view
-        res.render("update-user", { user, errors: [] });
+        // Render trang cập nhật với thông tin người dùng
+        res.render("update-user", { 
+            user, // Truyền thông tin người dùng vào view
+            errors: [] 
+        });
     } catch (error) {
-        console.error("Lỗi khi hiển thị trang đổi thông tin:", error);
+        console.error("Lỗi khi hiển thị trang cập nhật thông tin:", error);
         res.status(500).send("Đã xảy ra lỗi, vui lòng thử lại sau.");
     }
 };

@@ -11,10 +11,12 @@ export const fetchUserMiddleware = async (req, res, next) => {
             return res.redirect("/signin");
         }
 
-        req.user = user; // Gắn user vào request
+        // Lưu thông tin người dùng vào req
+        req.user = user;
         next();
     } catch (error) {
         console.error("Lỗi khi lấy thông tin người dùng:", error);
         res.status(500).send("Lỗi hệ thống, vui lòng thử lại sau.");
     }
 };
+
