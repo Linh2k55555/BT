@@ -2,13 +2,20 @@ import User from "../model/user.js";
 import bcryptjs from "bcryptjs";
 
 // Hàm render trang cập nhật thông tin
-export const renderUpdateUserPage = (req, res) => {
-    if (!req.session.user) {
-        return res.redirect("/signin");
-    }
+export const renderUpdateUserPage = async (req, res) => {
+    try {
+        const user = await User.findById(req.session.userId); 
+        if (!user) {
+            return res.status(404).send("Không tìm thấy thông tin người dùng.");
+        }
 
-    res.render("update-info", { user: req.session.user });
+        res.render("update-user", { user, errors: [] });
+    } catch (error) {
+        console.error("Lỗi khi hiển thị trang cập nhật thông tin:", error);
+        res.status(500).send("Đã xảy ra lỗi, vui lòng thử lại sau.");
+    }
 };
+
 
 // Hàm xử lý cập nhật mật khẩu
 export const updateUser = async (req, res) => {

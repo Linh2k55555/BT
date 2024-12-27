@@ -1,6 +1,6 @@
 import bcryptjs from "bcryptjs";
 import User from "../model/user.js";
-import Product from "../model/product.js";
+
 
 
 // Đăng ký
@@ -171,26 +171,34 @@ export const updateUserInfo = async (req, res) => {
     const { username, age } = req.body;
 
     try {
-        // Cập nhật thông tin người dùng trong cơ sở dữ liệu
+        // Kiểm tra nếu không có thông tin người dùng trong session
+        if (!req.session || !req.session.userId) {
+            return res.status(401).send("Bạn chưa đăng nhập.");
+        }
+
+        // Cập nhật thông tin người dùng trong MongoDB
         const updatedUser = await User.findByIdAndUpdate(
-            req.session.user._id,
-            { username, age },
-            { new: true } // Trả về đối tượng người dùng đã cập nhật
+            req.session.userId, 
+            { username, age }, 
+            { new: true } 
         );
 
-        req.session.user.username = updatedUser.username;
-        req.session.user.age = updatedUser.age;
+        if (!updatedUser) {
+            return res.status(404).send("Không tìm thấy người dùng.");
+        }
 
-        res.render("home2", {
-            username: updatedUser.username,
-            products: await Product.find(),
-            message: "Cập nhật thông tin thành công!",
-        });
+        // Cập nhật lại session với thông tin mới
+        req.session.username = updatedUser.username;
+        req.session.age = updatedUser.age;
+
+        // Quay lại trang home2 với thông báo
+        res.redirect("/home2?message=Cập nhật thông tin thành công!");
     } catch (error) {
         console.error("Lỗi khi cập nhật thông tin:", error);
         res.status(500).render("update-user", {
-            user: req.session.user,
+            user: req.session, 
             errors: ["Đã xảy ra lỗi, vui lòng thử lại sau."],
         });
     }
 };
+
