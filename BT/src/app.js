@@ -11,6 +11,8 @@ import updateUserRouter from "./routers/updateUser.js";
 import session from "express-session";
 import MongoStore from "connect-mongo"; 
 import updateUserRouter from "./routers/auth.js"
+import adminRouter from "./routers/admin.js";
+import cartRouter from './routers/cart.js';
 
 dotenv.config();
 
@@ -28,19 +30,19 @@ app.use(express.urlencoded({ extended: true }));
 
 
 // Cấu hình session
-const sessionMiddleware = session({
-    secret: process.env.SESSION_SECRET || "defaultSecretKey", // Bí mật cho session
+app.use(session({
+    secret: process.env.SESSION_SECRET || "defaultSecretKey",
     resave: false,
     saveUninitialized: false,
     store: MongoStore.create({
-        mongoUrl: process.env.DB_URI, // Kết nối đến MongoDB
-        collectionName: "sessions", // Tên collection lưu session
+        mongoUrl: process.env.DB_URI, // Đảm bảo đúng URL MongoDB
+        collectionName: "sessions",
     }),
     cookie: {
         maxAge: 1000 * 60 * 60 * 24, // Cookie sống trong 1 ngày
     },
-});
-app.use(sessionMiddleware);
+}));
+
 
 connectDB(process.env.DB_URI);
 
@@ -50,6 +52,9 @@ app.use("/api", productRouter);
 app.use("/", logoutRouter);
 app.use("/user", updateUserRouter);
 app.use("/", updateUserRouter);
+app.use("/admin", adminRouter);
+app.use("/api/cart", cartRouter);
+
 
 // Đăng ký
 app.get("/signup", (req, res) => {

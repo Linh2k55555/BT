@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý sản phẩm</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f4f9;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table th, table td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+        table th {
+            background: #007bff;
+            color: #fff;
+        }
+        .form-container {
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            background: #fff;
+            border-radius: 5px;
+        }
+        .form-container input, .form-container button {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+        }
+        .form-container button {
+            background: #28a745;
+            color: #fff;
+            border: none;
+        }
+        .btn-home {
+        display: inline-block;
+        margin-bottom: 20px;
+        padding: 10px 20px;
+        background: #007bff;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+    }
+    .btn-home:hover {
+        background: #0056b3;
+    }
+    </style>
+</head>
+<body>
+    <h1>Quản lý sản phẩm</h1>
+    <a href="/admin/dashboard" class="btn-home">Trang chủ</a>
+    <!-- Hiển thị thông báo -->
+    <% if (message) { %>
+        <p style="color: green;"><%= message %></p>
+    <% } %>
+
+    <!-- Form thêm sản phẩm -->
+    <div class="form-container">
+        <h2>Thêm sản phẩm mới</h2>
+        <form action="/admin/products" method="POST" enctype="multipart/form-data">
+            <input type="text" name="name" placeholder="Tên sản phẩm" required />
+            <input type="number" name="price" placeholder="Giá sản phẩm" required />
+            <input type="text" name="description" placeholder="Mô tả sản phẩm" />
+            <input type="file" name="image" accept="image/*" required />
+            <button type="submit">Thêm sản phẩm</button>
+        </form>
+    </div>
+
+    <!-- Danh sách sản phẩm -->
+    <table>
+        <thead>
+            <tr>
+                <th>Tên</th>
+                <th>Giá</th>
+                <th>Mô tả</th>
+                <th>Hình ảnh</th>
+                <th>Hành động</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% products.forEach(product => { %>
+                <tr>
+                    <td><%= product.name %></td>
+                    <td><%= product.price %></td>
+                    <td><%= product.description %></td>
+                    <td>
+                        <% if (product.image) { %>
+                            <img src="data:image/jpeg;base64,<%= product.image %>" alt="Hình ảnh" style="width: 50px; height: 50px;">
+                        <% } else { %>
+                            Không có hình ảnh
+                        <% } %>
+                    </td>
+                    <td>
+                        <form action="/admin/products/<%= product._id %>" method="POST" enctype="multipart/form-data">
+                            <input type="text" name="name" value="<%= product.name %>" />
+                            <input type="number" name="price" value="<%= product.price %>" />
+                            <input type="text" name="description" value="<%= product.description %>" />
+                            <input type="file" name="image" />
+                            <button type="submit">Cập nhật</button>
+                        </form>
+                        <a href="/admin/products/delete/<%= product._id %>" style="color: red;">Xóa</a>
+                    </td>
+                </tr>
+            <% }) %>
+        </tbody>
+    </table>
+</body>
+</html>

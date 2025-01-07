@@ -40,39 +40,54 @@ export const signin = async (req, res) => {
     const { email, password } = req.body;
 
     try {
+        // Tìm người dùng theo email
         const user = await User.findOne({ email });
         if (!user) {
             return res.status(400).render("signin", {
                 message: "Email không tồn tại.",
-                email, // Giữ lại email đã nhập
+                email,
             });
         }
 
+        // So sánh mật khẩu nhập với hash mật khẩu trong DB
         const isPasswordValid = await bcryptjs.compare(password, user.password);
         if (!isPasswordValid) {
             return res.status(400).render("signin", {
                 message: "Mật khẩu không chính xác.",
-                email, // Giữ lại email đã nhập
+                email,
             });
         }
 
         // Lưu thông tin vào session
         req.session.userId = user._id;
         req.session.username = user.username;
+        req.session.role = user.role;
 
-        res.redirect("/home2");
+        // Chuyển hướng dựa trên vai trò
+        if (user.role === "admin") {
+            return res.redirect("/admin/dashboard");
+        } else if (user.role === "user") {
+            return res.redirect("/home2");
+        } else {
+            return res.status(403).render("signin", {
+                message: "Vai trò không hợp lệ.",
+                email,
+            });
+        }
     } catch (err) {
         console.error("Lỗi trong quá trình đăng nhập:", err);
         res.status(500).render("signin", {
             message: "Đã xảy ra lỗi, vui lòng thử lại sau.",
-            email, // Đảm bảo email được giữ lại
+            email,
         });
     }
-};
+    console.log("Email:", email);
+console.log("Mật khẩu nhập vào:", password);
+console.log("Thông tin user từ DB:", user);
+console.log("Hash trong DB:", user ? user.password : "Không tìm thấy user");
+console.log("Kết quả so sánh mật khẩu:", await bcryptjs.compare(password, user.password));
 
-
-
-
+};  
 
 // Thay đổi mật khẩu
 export const updatePassword = async (req, res) => {
@@ -120,15 +135,21 @@ export const updatePassword = async (req, res) => {
 // Đăng xuất
 export const logout = (req, res) => {
     try {
-        req.user = null; 
-
-        // Chuyển hướng về trang home1.ejs
-        res.render("home1", { message: "Bạn đã đăng xuất thành công!", products: [] }); 
+        // Xóa session của người dùng
+        req.session.destroy((err) => {
+            if (err) {
+                console.error("Lỗi khi xóa session:", err);
+                return res.status(500).send("Đã xảy ra lỗi khi đăng xuất.");
+            }
+            // Chuyển hướng về trang chủ
+            res.redirect("/?message=Bạn đã đăng xuất thành công!");
+        });
     } catch (error) {
         console.error("Lỗi khi đăng xuất:", error);
         res.status(500).send("Đã xảy ra lỗi, vui lòng thử lại sau.");
     }
 };
+
 
 
 // export const renderUpdateUserPage = async (req, res) => {
