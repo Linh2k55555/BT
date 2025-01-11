@@ -1,7 +1,7 @@
 import Product from "../model/product.js";
 import Cart from '../model/cart.js';
 import nodemailer from 'nodemailer';
-
+import { Transaction } from "../model/transaction.js";
 export const renderHomePage = async (req, res) => {
     try {
         // Lấy danh sách sản phẩm từ MongoDB
@@ -79,21 +79,20 @@ export const renderCheckoutPage = async (req, res) => {
 };
 
 export const handleCheckout = async (req, res) => {
-    console.log("Dữ liệu từ form:", req.body); // Kiểm tra dữ liệu từ form
+    console.log("Dữ liệu từ form:", req.body);
     const { fullName, phoneNumber, address, ward, district, city, paymentMethod } = req.body;
     const { userId } = req.session;
 
-    // Kiểm tra thông tin đầu vào
     if (!fullName || !phoneNumber || !address || !ward || !district || !city || !paymentMethod) {
         return res.status(400).render('checkout', {
             errors: ["Vui lòng điền đầy đủ thông tin và chọn phương thức thanh toán."],
             user: req.user || {},
-            total: 0, // Tổng thanh toán mặc định là 0 nếu có lỗi
+            total: 0,
         });
     }
 
     try {
-        // Lấy giỏ hàng của người dùng
+        // Lấy giỏ hàng
         const cart = await Cart.findOne({ userId }).populate('items.productId');
         if (!cart || cart.items.length === 0) {
             return res.status(400).render('checkout', {
@@ -109,10 +108,8 @@ export const handleCheckout = async (req, res) => {
             0
         );
 
-        console.log("Tổng tiền thanh toán:", total);
-
         // Lấy email từ người dùng
-        const email = req.user?.email || ''; // Đảm bảo email tồn tại
+        const email = req.user?.email || '';
         if (!email) {
             return res.status(400).render('checkout', {
                 errors: ["Không tìm thấy email người dùng."],
@@ -132,8 +129,6 @@ export const handleCheckout = async (req, res) => {
             minute: '2-digit',
         });
 
-        console.log("Ngày giờ đặt hàng:", formattedDate);
-
         // Gửi email xác nhận
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -148,21 +143,36 @@ export const handleCheckout = async (req, res) => {
             to: email,
             subject: 'Xác nhận đơn hàng',
             text: `Cảm ơn bạn, ${fullName}, đã đặt hàng.
-Tổng đơn hàng: ${total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}.
-Địa chỉ giao hàng: ${address}, ${ward}, ${district}, ${city}.
-Số điện thoại: ${phoneNumber}.
-Phương thức thanh toán: ${paymentMethod === 'cod' ? 'Thanh toán khi nhận hàng' : 'Chuyển khoản'}.
-Ngày đặt hàng: ${formattedDate}.
+            Tổng đơn hàng: ${total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}.
+            Địa chỉ giao hàng:
+            ${address}, ${ward}, ${district}, ${city}.
+            Số điện thoại: ${phoneNumber}.
+            Phương thức thanh toán: ${paymentMethod === 'cod' ? 'Thanh toán khi nhận hàng' : 'Chuyển khoản'}.
+            Ngày đặt hàng: ${formattedDate}.
             `,
         };
 
-        // Gửi email
         await transporter.sendMail(mailOptions);
-        console.log("Email xác nhận đã được gửi.");
 
-        // Xóa giỏ hàng sau khi thanh toán thành công
+        // Lưu giao dịch vào cơ sở dữ liệu
+        const transaction = new Transaction({
+            userId,
+            fullName,
+            phoneNumber,
+            address,
+            ward,
+            district,
+            city,
+            total,
+            paymentMethod,
+            createdAt: now,
+        });
+
+        await transaction.save();
+        console.log("Giao dịch đã được lưu vào cơ sở dữ liệu.");
+
+        // Xóa giỏ hàng sau khi thanh toán
         await Cart.deleteOne({ userId });
-        console.log("Giỏ hàng đã được xóa.");
 
         // Chuyển hướng về trang home2 với thông báo thành công
         res.redirect('/home2?message=Đặt hàng thành công! Kiểm tra email để biết thêm chi tiết.');

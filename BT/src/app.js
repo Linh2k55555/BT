@@ -13,6 +13,8 @@ import MongoStore from "connect-mongo";
 import updateUserRouter from "./routers/auth.js"
 import adminRouter from "./routers/admin.js";
 import cartRouter from './routers/cart.js';
+import transactionRoutes from './routers/transaction.js';
+
 
 dotenv.config();
 
@@ -54,6 +56,7 @@ app.use("/user", updateUserRouter);
 app.use("/", updateUserRouter);
 app.use("/admin", adminRouter);
 app.use("/api/cart", cartRouter);
+app.use('/transactions', transactionRoutes);
 
 
 // Đăng ký
