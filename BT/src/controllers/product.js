@@ -70,7 +70,7 @@ export const renderAdminPage = async (req, res) => {
         res.render("admin", { products });
     } catch (error) {
         console.error("Error rendering admin page:", error);
-        res.status(500).send("Đã xảy ra lỗi, vui lòng thử lại sau.");
+        res.status(500).send("Đã xảy ra lỗi, vui lòng thử lại sau.11");
     }
 };
 

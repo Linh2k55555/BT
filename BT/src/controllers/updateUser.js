@@ -12,7 +12,7 @@ export const renderUpdateUserPage = async (req, res) => {
         res.render("update-user", { user, errors: [] });
     } catch (error) {
         console.error("Lỗi khi hiển thị trang cập nhật thông tin:", error);
-        res.status(500).send("Đã xảy ra lỗi, vui lòng thử lại sau.");
+        res.status(500).send("Đã xảy ra lỗi, vui lòng thử lại sau.12");
     }
 };
 
@@ -44,6 +44,6 @@ export const updateUser = async (req, res) => {
         res.render("home1", { message: "Mật khẩu đã được cập nhật thành công!" });
     } catch (error) {
         console.error("Lỗi khi cập nhật mật khẩu:", error);
-        res.status(500).send("Đã xảy ra lỗi, vui lòng thử lại sau.");
+        res.status(500).send("Đã xảy ra lỗi, vui lòng thử lại sau.13");
     }
 };

@@ -31,7 +31,7 @@ export const signup = async (req, res) => {
         res.redirect("/signin?message=Đăng ký thành công! Vui lòng đăng nhập.");
     } catch (err) {
         console.error("Lỗi trong quá trình đăng ký:", err);
-        res.status(500).render("signup", { errors: ["Đã xảy ra lỗi, vui lòng thử lại sau."] });
+        res.status(500).render("signup", { errors: ["Đã xảy ra lỗi, vui lòng thử lại sau.1"] });
     }
 };
 
@@ -77,7 +77,7 @@ export const signin = async (req, res) => {
     } catch (err) {
         console.error("Lỗi trong quá trình đăng nhập:", err);
         res.status(500).render("signin", {
-            message: "Đã xảy ra lỗi, vui lòng thử lại sau.",
+            message: "Đã xảy ra lỗi, vui lòng thử lại sau.2",
             email,
         });
     }
@@ -125,7 +125,7 @@ export const updatePassword = async (req, res) => {
     } catch (error) {
         console.error("Lỗi khi thay đổi mật khẩu:", error);
         res.status(500).render("update-info", {
-            errors: ["Đã xảy ra lỗi, vui lòng thử lại sau."],
+            errors: ["Đã xảy ra lỗi, vui lòng thử lại sau.3"],
             user: req.user,
         });
     }
@@ -146,7 +146,7 @@ export const logout = (req, res) => {
         });
     } catch (error) {
         console.error("Lỗi khi đăng xuất:", error);
-        res.status(500).send("Đã xảy ra lỗi, vui lòng thử lại sau.");
+        res.status(500).send("Đã xảy ra lỗi, vui lòng thử lại sau.4");
     }
 };
 
@@ -183,7 +183,7 @@ export const renderUpdateUserPage = async (req, res) => {
         });
     } catch (error) {
         console.error("Lỗi khi hiển thị trang cập nhật thông tin:", error);
-        res.status(500).send("Đã xảy ra lỗi, vui lòng thử lại sau.");
+        res.status(500).send("Đã xảy ra lỗi, vui lòng thử lại sau.5");
     }
 };
 
@@ -218,7 +218,7 @@ export const updateUserInfo = async (req, res) => {
         console.error("Lỗi khi cập nhật thông tin:", error);
         res.status(500).render("update-user", {
             user: req.session, 
-            errors: ["Đã xảy ra lỗi, vui lòng thử lại sau."],
+            errors: ["Đã xảy ra lỗi, vui lòng thử lại sau.6"],
         });
     }
 };

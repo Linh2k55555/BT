@@ -270,37 +270,45 @@ async function loadCart() {
     fetch('/api/cart', {
         method: 'GET',
     })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Không thể lấy dữ liệu giỏ hàng.');
+            }
+            return response.json();
+        })
         .then(data => {
-            // Cập nhật giao diện giỏ hàng với dữ liệu từ server
             const cartItemsElement = document.getElementById('cart-items');
             const cartTotalElement = document.getElementById('cart-total');
 
-            if (data.items.length === 0) {
+            if (!data || !data.items || data.items.length === 0) {
+                // Trường hợp giỏ hàng trống
                 cartItemsElement.innerHTML = '<li>Chưa có sản phẩm nào trong giỏ hàng.</li>';
                 cartTotalElement.textContent = 'Tổng cộng: 0₫';
-            } else {
-                cartItemsElement.innerHTML = '';
-                let total = 0;
-
-                data.items.forEach(item => {
-                    const li = document.createElement('li');
-                    li.innerHTML = `
-                        ${item.productId.name} - ${item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })} x ${item.quantity}
-                        <button class="remove-btn" onclick="removeFromCart('${item.productId._id}')">Xóa</button>
-                    `;
-                    cartItemsElement.appendChild(li);
-                    total += item.price * item.quantity;
-                });
-
-                cartTotalElement.textContent = `Tổng cộng: ${total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}`;
+                return;
             }
+
+            // Cập nhật giao diện giỏ hàng
+            cartItemsElement.innerHTML = '';
+            let total = 0;
+
+            data.items.forEach(item => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    ${item.productId.name} - ${item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })} x ${item.quantity}
+                    <button class="remove-btn" onclick="removeFromCart('${item.productId._id}')">Xóa</button>
+                `;
+                cartItemsElement.appendChild(li);
+                total += item.price * item.quantity;
+            });
+
+            cartTotalElement.textContent = `Tổng cộng: ${total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}`;
         })
         .catch(error => {
             console.error('Lỗi khi tải giỏ hàng:', error);
-            alert('Đã xảy ra lỗi, vui lòng thử lại sau.');
+            alert('Đã xảy ra lỗi khi tải giỏ hàng.');
         });
 }
+
 
 // Hàm thêm sản phẩm vào giỏ hàng
 async function addToCart(productId, price) {
@@ -325,7 +333,7 @@ async function addToCart(productId, price) {
             loadCart(); // Tải lại giỏ hàng sau khi thêm
         })
         .catch((error) => {
-            alert('Đã xảy ra lỗi, vui lòng thử lại sau.');
+            alert('Đã xảy ra lỗi, vui lòng thử lại sau.15');
             console.error(error);
         });
 }
@@ -349,28 +357,34 @@ async function removeFromCart(productId) {
             loadCart(); // Tải lại giỏ hàng sau khi xóa
         } else {
             console.error('Chi tiết lỗi từ server:', data);
-            alert(data.message || 'Đã xảy ra lỗi, vui lòng thử lại sau.');
+            alert(data.message || 'Đã xảy ra lỗi, vui lòng thử lại sau.16');
         }
     } catch (error) {
         console.error('Lỗi khi gửi yêu cầu xoá sản phẩm:', error);
-        alert('Đã xảy ra lỗi, vui lòng thử lại sau.');
+        alert('Đã xảy ra lỗi, vui lòng thử lại sau.17');
     }
 }
 
 // Hàm thanh toán
+// Hàm thanh toán - Chuyển sang trang checkout
 function checkoutCart() {
-    if (cartItems.length === 0) {
-        alert("Giỏ hàng trống. Vui lòng thêm sản phẩm trước khi thanh toán.");
-        return;
-    }
-
-    const total = cartItems.reduce((sum, item) => sum + item.productId.price * item.quantity, 0);
-    alert(`Bạn đã thanh toán thành công số tiền: ${total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}`);
-    
-    // Xóa giỏ hàng sau khi thanh toán
-    cartItems.length = 0;
-    updateCartUI();
+    fetch('/api/cart', { method: 'GET' })
+        .then(response => response.json())
+        .then(cart => {
+            if (!cart || cart.items.length === 0) {
+                alert("Giỏ hàng trống. Vui lòng thêm sản phẩm trước khi thanh toán.");
+                return;
+            }
+            window.location.href = '/checkout'; // Điều hướng đến trang checkout
+        })
+        .catch(error => {
+            console.error("Lỗi khi thanh toán:", error);
+            alert("Đã xảy ra lỗi, vui lòng thử lại sau.18");
+        });
+        
 }
+
+   
 
 // Hàm cập nhật giao diện giỏ hàng
 function updateCartUI() {

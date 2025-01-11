@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh toán</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            background-color: rgba(0, 0, 0, 0.7);
+            width: 100%;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin: 0;
+            color: #fff;
+        }
+
+        .container {
+            margin-top: 30px;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.85);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h2 {
+            text-align: center;
+            color: #28a745;
+            margin-bottom: 20px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        label {
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: black;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            box-shadow: 0 0 5px rgba(40, 167, 69, 0.8);
+        }
+
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23ffffff'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 12px;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+            accent-color: #28a745;
+        }
+
+        button {
+            padding: 12px;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #fff;
+            background-color: #28a745;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        .row {
+            display: flex;
+            gap: 15px;
+        }
+
+        .row > div {
+            flex: 1;
+        }
+
+        .payment-method {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .payment-method label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1rem;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        .total-container {
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.9);
+            border-radius: 8px;
+            text-align: center;
+            color: #fff;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Thanh toán đơn hàng</h1>
+    </header>
+
+    <div class="container">
+        <h2>Thông tin thanh toán</h2>
+        <form action="/checkout" method="POST">
+            <label for="fullName">Họ và Tên:</label>
+            <input type="text" id="fullName" name="fullName" placeholder="Nhập họ và tên" required>
+            
+            <label for="phoneNumber">Số điện thoại:</label>
+            <input type="text" id="phoneNumber" name="phoneNumber" placeholder="Nhập số điện thoại" required>
+            
+            <label for="address">Địa chỉ chi tiết:</label>
+            <input type="text" id="address" name="address" placeholder="Số nhà, tên đường" required>
+            
+            <div class="row">
+                <div>
+                    <label for="city">Tỉnh/Thành phố:</label>
+                    <select id="city" name="city" required>
+                        <option value="" disabled selected>Chọn Tỉnh/Thành phố</option>
+                        <option value="hanoi">Hà Nội</option>
+                        <option value="hochiminh">Hồ Chí Minh</option>
+                        <option value="danang">Đà Nẵng</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="district">Quận/Huyện:</label>
+                    <select id="district" name="district" required>
+                        <option value="" disabled selected>Chọn Quận/Huyện</option>
+                    </select>
+                </div>
+            </div>
+
+            <label for="ward">Phường/Xã:</label>
+            <select id="ward" name="ward" required>
+                <option value="" disabled selected>Chọn Phường/Xã</option>
+            </select>
+
+            <div class="payment-method">
+                <label>
+                    <input type="radio" id="cod" name="paymentMethod" value="cod" required>
+                    Thanh toán khi nhận hàng
+                </label>
+                <label>
+                    <input type="radio" id="transfer" name="paymentMethod" value="transfer">
+                    Chuyển khoản
+                </label>
+            </div>
+
+            <div class="total-container">
+                Tổng thanh toán: <%= total ? total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : "0 VND" %>
+            </div>
+        
+            <button type="submit">Thanh toán</button>
+        </form>
+    </div>
+</body>
+<script>
+    const districts = {
+        hanoi: ["Ba Đình", "Hoàn Kiếm", "Đống Đa", "Cầu Giấy"],
+        hochiminh: ["Quận 1", "Quận 3", "Quận 7", "Thủ Đức"],
+        danang: ["Hải Châu", "Thanh Khê", "Ngũ Hành Sơn", "Sơn Trà"]
+    };
+
+    const wards = {
+        "Ba Đình": ["Phường 1", "Phường 2", "Phường 3"],
+        "Hoàn Kiếm": ["Phường 4", "Phường 5"],
+        "Quận 1": ["Phường Bến Nghé", "Phường Đa Kao"],
+        "Hải Châu": ["Phường Hòa Cường", "Phường Bình Thuận"]
+    };
+
+    document.getElementById("city").addEventListener("change", function () {
+        const city = this.value;
+        const districtSelect = document.getElementById("district");
+        districtSelect.innerHTML = `<option value="" disabled selected>Chọn Quận/Huyện</option>`;
+        document.getElementById("ward").innerHTML = `<option value="" disabled selected>Chọn Phường/Xã</option>`;
+
+        if (districts[city]) {
+            districts[city].forEach(district => {
+                const option = document.createElement("option");
+                option.value = district;
+                option.textContent = district;
+                districtSelect.appendChild(option);
+            });
+        }
+    });
+
+    document.getElementById("district").addEventListener("change", function () {
+        const district = this.value;
+        const wardSelect = document.getElementById("ward");
+        wardSelect.innerHTML = `<option value="" disabled selected>Chọn Phường/Xã</option>`;
+
+        if (wards[district]) {
+            wards[district].forEach(ward => {
+                const option = document.createElement("option");
+                option.value = ward;
+                option.textContent = ward;
+                wardSelect.appendChild(option);
+            });
+        }
+    });
+</script>
+</html>

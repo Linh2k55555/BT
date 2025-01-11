@@ -5,16 +5,17 @@ import mongoose from 'mongoose';
 export const getCart = async (req, res) => {
     const { userId } = req.session; // Lấy userId từ session
     try {
-        const cart = await Cart.findOne({ userId }).populate('items.productId'); // Populate để lấy thông tin sản phẩm
-        res.json(cart || { items: [] });
+        const cart = await Cart.findOne({ userId }).populate('items.productId');
+        if (!cart) {
+            // Nếu giỏ hàng không tồn tại, trả về giỏ hàng rỗng
+            return res.json({ items: [] });
+        }
+        res.json(cart);
     } catch (error) {
         console.error("Lỗi khi lấy giỏ hàng:", error);
         res.status(500).json({ message: "Đã xảy ra lỗi khi lấy giỏ hàng", error });
     }
 };
-
-
-
 
 export const updateCart = async (req, res) => {
     const { userId } = req.session; // Lấy userId từ session
@@ -81,7 +82,7 @@ export const removeFromCart = async (req, res) => {
         return res.json({ message: 'Sản phẩm đã được xoá khỏi giỏ hàng.' });
     } catch (error) {
         console.error('Lỗi khi xóa sản phẩm khỏi giỏ hàng:', error);
-        return res.status(500).json({ message: 'Đã xảy ra lỗi, vui lòng thử lại sau.' });
+        return res.status(500).json({ message: 'Đã xảy ra lỗi, vui lòng thử lại sau.7' });
     }
 };
 
@@ -121,7 +122,7 @@ export const addToCart = async (req, res) => {
         res.status(200).json({ message: 'Thêm sản phẩm vào giỏ hàng thành công' });
     } catch (error) {
         console.error('Lỗi khi thêm sản phẩm vào giỏ hàng:', error);
-        res.status(500).json({ message: 'Đã xảy ra lỗi, vui lòng thử lại sau.' });
+        res.status(500).json({ message: 'Đã xảy ra lỗi, vui lòng thử lại sau.8' });
     }
 };
 

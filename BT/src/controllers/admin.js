@@ -44,7 +44,8 @@ export const updateProduct = async (req, res) => {
 
         let imageBase64;
         if (req.file) {
-            imageBase64 = req.file.buffer.toString("base64"); // Chuyển ảnh mới sang Base64
+            const imageBuffer = fs.readFileSync(req.file.path); // Đọc file từ thư mục tạm
+            imageBase64 = imageBuffer.toString("base64"); // Chuyển thành chuỗi Base64
         }
 
         await Product.findByIdAndUpdate(id, {
@@ -60,6 +61,7 @@ export const updateProduct = async (req, res) => {
         res.status(500).send("Đã xảy ra lỗi khi cập nhật sản phẩm.");
     }
 };
+
 
 // Xử lý xóa sản phẩm
 export const deleteProduct = async (req, res) => {
