@@ -14,7 +14,8 @@ import updateUserRouter from "./routers/auth.js"
 import adminRouter from "./routers/admin.js";
 import cartRouter from './routers/cart.js';
 import transactionRoutes from './routers/transaction.js';
-
+import checkoutGuestRoutes from './routers/checkoutGuest.js';
+import guestCartRouter from './routers/guestCart.js';
 
 dotenv.config();
 
@@ -57,8 +58,8 @@ app.use("/", updateUserRouter);
 app.use("/admin", adminRouter);
 app.use("/api/cart", cartRouter);
 app.use('/transactions', transactionRoutes);
-
-
+app.use('/checkout/guest', checkoutGuestRoutes);
+app.use('/guest-cart', guestCartRouter);
 // Đăng ký
 app.get("/signup", (req, res) => {
     res.render("signup", { errors: [] });
@@ -78,6 +79,9 @@ const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
     console.log(`Server đang chạy tại http://localhost:${PORT}`);
 });
+
+console.log('EMAIL_USERNAME:', process.env.EMAIL_USERNAME);
+console.log('EMAIL_PASSWORD:', process.env.EMAIL_PASSWORD);
 
 export default app;
 export const viteNodeApp = app;

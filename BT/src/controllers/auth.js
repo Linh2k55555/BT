@@ -2,7 +2,6 @@ import bcryptjs from "bcryptjs";
 import User from "../model/user.js";
 
 
-
 // Đăng ký
 export const signup = async (req, res) => {
     const { username, password, confirmPassword, email, age } = req.body;

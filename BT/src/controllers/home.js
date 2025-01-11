@@ -4,18 +4,19 @@ import nodemailer from 'nodemailer';
 import { Transaction } from "../model/transaction.js";
 export const renderHomePage = async (req, res) => {
     try {
-        // Lấy danh sách sản phẩm từ MongoDB
         const products = await Product.find();
 
         res.render("home1", {
-            products, // Truyền danh sách sản phẩm
-            message: req.query.message || "", // Thông báo sau khi đăng xuất
+            products, 
+            cart: req.session.cart || { items: [] }, // Truyền giỏ hàng vào giao diện
+            message: req.query.message || "", 
         });
     } catch (error) {
         console.error("Error fetching products:", error);
         res.status(500).send("Lỗi hệ thống, vui lòng thử lại sau.");
     }
 };
+
 
 
 export const renderHome2 = async (req, res) => {

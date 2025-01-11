@@ -87,9 +87,30 @@ export const removeFromCart = async (req, res) => {
 };
 
 export const addToCart = async (req, res) => {
-    const { userId } = req.session; // Lấy ID người dùng từ session
-    const { productId, price } = req.body; // Lấy productId và price từ request body
+    const { productId, price } = req.body;
+    const userId = req.session.userId; // Get userId from session (if logged in)
 
+    // If user is not logged in, store the cart in the session
+    if (!userId) {
+        if (!req.session.cart) {
+            req.session.cart = { items: [] };
+        }
+
+        const existingItem = req.session.cart.items.find(item => item.productId === productId);
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            req.session.cart.items.push({
+                productId,
+                price,
+                quantity: 1,
+            });
+        }
+
+        return res.status(200).json({ message: 'Sản phẩm đã được thêm vào giỏ hàng tạm thời!' });
+    }
+
+    // If user is logged in, save the cart to the database
     try {
         if (!mongoose.Types.ObjectId.isValid(productId)) {
             return res.status(400).json({ message: 'ID sản phẩm không hợp lệ' });
@@ -98,31 +119,33 @@ export const addToCart = async (req, res) => {
         let cart = await Cart.findOne({ userId });
 
         if (!cart) {
-            // Nếu chưa có giỏ hàng, tạo mới
+            // If no cart exists for the user, create a new one
             cart = new Cart({
                 userId,
                 items: [{ productId, price, quantity: 1 }],
             });
         } else {
-            // Nếu đã có giỏ hàng, kiểm tra sản phẩm
+            // Check if the product already exists in the cart
             const existingItem = cart.items.find(
                 (item) => item.productId.toString() === productId
             );
 
             if (existingItem) {
-                // Tăng số lượng sản phẩm nếu đã tồn tại
+                // If the product exists, increase its quantity
                 existingItem.quantity += 1;
             } else {
-                // Thêm sản phẩm mới
+                // Add a new product to the cart
                 cart.items.push({ productId, price, quantity: 1 });
             }
         }
 
+        // Save the cart to the database
         await cart.save();
         res.status(200).json({ message: 'Thêm sản phẩm vào giỏ hàng thành công' });
     } catch (error) {
         console.error('Lỗi khi thêm sản phẩm vào giỏ hàng:', error);
-        res.status(500).json({ message: 'Đã xảy ra lỗi, vui lòng thử lại sau.8' });
+        res.status(500).json({ message: 'Đã xảy ra lỗi, vui lòng thử lại sau.' });
     }
 };
+
 
