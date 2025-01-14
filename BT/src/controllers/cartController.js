@@ -31,7 +31,6 @@ export const updateCart = async (req, res) => {
             return res.status(400).json({ message: "Dữ liệu sản phẩm không hợp lệ" });
         }
 
-        // Chuyển đổi `productId` thành `ObjectId`
         const normalizedItems = items.map(item => ({
             productId: mongoose.Types.ObjectId(item.productId),
             quantity: item.quantity || 1,

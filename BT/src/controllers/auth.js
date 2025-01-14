@@ -84,8 +84,7 @@ export const signin = async (req, res) => {
 console.log("Mật khẩu nhập vào:", password);
 console.log("Thông tin user từ DB:", user);
 console.log("Hash trong DB:", user ? user.password : "Không tìm thấy user");
-console.log("Kết quả so sánh mật khẩu:", await bcryptjs.compare(password, user.password));
-
+console.log("Kết quả so sánh mật khẩu:", await bcryptjs.compare(password, user.password));    
 };  
 
 // Thay đổi mật khẩu
