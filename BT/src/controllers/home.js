@@ -2,6 +2,7 @@ import Product from "../model/product.js";
 import Cart from '../model/cart.js';
 import nodemailer from 'nodemailer';
 import { Transaction } from "../model/transaction.js";
+//render trang home 1
 export const renderHomePage = async (req, res) => {
     try {
         const products = await Product.find();
@@ -18,7 +19,7 @@ export const renderHomePage = async (req, res) => {
 };
 
 
-
+//reder tranh home2
 export const renderHome2 = async (req, res) => {
     try {
         const userId = req.session.userId; // Lấy userId từ session
@@ -44,7 +45,7 @@ export const renderHome2 = async (req, res) => {
 
 
 
-
+//render trang đổi mật khẩu
 export const renderUpdateInfo = (req, res) => {
     const user = {
         username: "",

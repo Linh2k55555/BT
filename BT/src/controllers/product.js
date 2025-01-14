@@ -1,5 +1,5 @@
 import Product from "../model/product";
-
+//lấy giỏ hàng
 export const getProducts = async (req, res) => {
     try {
         const data = await Product.find();
@@ -24,7 +24,7 @@ export const getProductsById = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-
+//thêm sản phẩm
 export const addProduct = async (req, res) => {
     try {
         const data = await new Product(req.body).save(); 
@@ -34,7 +34,7 @@ export const addProduct = async (req, res) => {
     }
 };
 
-
+//xoá sản phẩm
 export const deleteProduct = async (req, res) => {
     try {
         const data = await Product.findOneAndDelete({ _id: req.params.id });
@@ -46,7 +46,7 @@ export const deleteProduct = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-
+//cập nhật sản hẩm
 export const updateProduct = async (req, res) => {
     try {
         const data = await Product.findOneAndUpdate(
@@ -63,10 +63,10 @@ export const updateProduct = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-
+//render trang admin
 export const renderAdminPage = async (req, res) => {
     try {
-        const products = await Product.find(); // Fetch all products
+        const products = await Product.find(); 
         res.render("admin", { products });
     } catch (error) {
         console.error("Error rendering admin page:", error);

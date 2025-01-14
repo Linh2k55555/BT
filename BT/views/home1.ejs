@@ -223,6 +223,7 @@
                     <div class="product-details">
                         <h2><%= product.name %></h2>
                         <p>Giá: <%= product.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) %></p>
+                        <p><%= product.description %></p>
                         <button class="add-to-cart" onclick="addToCart('<%= product._id %>', '<%= product.price %>', '<%= product.name %>')">
                             Thêm vào giỏ hàng
                         </button>

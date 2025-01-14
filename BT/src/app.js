@@ -50,16 +50,16 @@ app.use(session({
 connectDB(process.env.DB_URI);
 
 // Các route
-app.use("/api", authRouter);
-app.use("/api", productRouter);
-app.use("/", logoutRouter);
-app.use("/user", updateUserRouter);
+app.use("/api", authRouter);//người dùng
+app.use("/api", productRouter);//sản phẩm
+app.use("/", logoutRouter);//đăng xuất
+app.use("/user", updateUserRouter);//cập nhật thông tin
 app.use("/", updateUserRouter);
-app.use("/admin", adminRouter);
-app.use("/api/cart", cartRouter);
-app.use('/transactions', transactionRoutes);
-app.use('/checkout/guest', checkoutGuestRoutes);
-app.use('/guest-cart', guestCartRouter);
+app.use("/admin", adminRouter);//admin
+app.use("/api/cart", cartRouter);//giỏ hàng
+app.use('/transactions', transactionRoutes);//lịch sử giao dịch
+app.use('/checkout/guest', checkoutGuestRoutes);//thanh toán người dùng chưa đăng nhập
+app.use('/guest-cart', guestCartRouter);//giỏ hàng người dùng chưa đăng nhập
 // Đăng ký
 app.get("/signup", (req, res) => {
     res.render("signup", { errors: [] });

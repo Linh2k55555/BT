@@ -11,7 +11,7 @@ router.get("/", renderHomePage);
 //  home2
 router.get("/home2", isAuthenticated, renderHome2);
 
-//thay đổi thông tin
+//thay đổi mật khẩu
 router.get("/update-info", renderUpdateInfo);
 
 //router thanh toán
