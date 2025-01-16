@@ -46,13 +46,13 @@ export const renderHome2 = async (req, res) => {
 
 
 //render trang đổi mật khẩu
-export const renderUpdateInfo = (req, res) => {
+export const renderUpdatepassword = (req, res) => {
     const user = {
         username: "",
         email: "",
         age: 25
     }; // Thay thế bằng dữ liệu thực tế từ DB
-    res.render("update-info", { user, errors: [] });
+    res.render("update-password", { user, errors: [] });
 };
 
 

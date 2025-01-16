@@ -96,7 +96,7 @@ export const updatePassword = async (req, res) => {
     }
 
     if (password !== confirmPassword) {
-        return res.status(400).render("update-info", {
+        return res.status(400).render("update-password", {
             errors: ["Mật khẩu mới và xác nhận mật khẩu không khớp."],
             user: req.user, // Truyền thông tin người dùng để giữ dữ liệu trong form
         });
@@ -108,7 +108,7 @@ export const updatePassword = async (req, res) => {
         // Kiểm tra mật khẩu cũ
         const isOldPasswordValid = await bcryptjs.compare(oldPassword, user.password);
         if (!isOldPasswordValid) {
-            return res.status(400).render("update-info", {
+            return res.status(400).render("update-password", {
                 errors: ["Mật khẩu cũ không chính xác."],
                 user: req.user,
             });
@@ -122,7 +122,7 @@ export const updatePassword = async (req, res) => {
         res.redirect(`/home2?message=Cập nhật mật khẩu thành công!`);
     } catch (error) {
         console.error("Lỗi khi thay đổi mật khẩu:", error);
-        res.status(500).render("update-info", {
+        res.status(500).render("update-password", {
             errors: ["Đã xảy ra lỗi, vui lòng thử lại sau.3"],
             user: req.user,
         });

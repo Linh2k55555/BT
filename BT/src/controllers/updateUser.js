@@ -27,7 +27,7 @@ export const updateUser = async (req, res) => {
         }
 
         if (password !== confirmPassword) {
-            return res.render("update-info", {
+            return res.render("update-password", {
                 user: req.session.user,
                 errors: ["Mật khẩu và xác nhận mật khẩu không khớp."],
             });
