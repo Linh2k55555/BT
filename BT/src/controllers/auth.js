@@ -148,18 +148,6 @@ export const logout = (req, res) => {
     }
 };
 
-
-
-// export const renderUpdateUserPage = async (req, res) => {
-//     try {
-//         const user = await User.findById(req.session.user._id); // Lấy thông tin user từ session
-//         res.render("update-user", { user, errors: [] });
-//     } catch (error) {
-//         console.error("Lỗi khi hiển thị trang cập nhật thông tin:", error);
-//         res.status(500).send("Đã xảy ra lỗi, vui lòng thử lại sau.");
-//     }
-// };
-
 // Hiển thị trang đổi thông tin người dùng
 export const renderUpdateUserPage = async (req, res) => {
     try {
