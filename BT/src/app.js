@@ -16,6 +16,7 @@ import cartRouter from './routers/cart.js';
 import transactionRoutes from './routers/transaction.js';
 import checkoutGuestRoutes from './routers/checkoutGuest.js';
 import guestCartRouter from './routers/guestCart.js';
+import forgotPasswordRouter from "./routers/forgotPassword.js";
 
 dotenv.config();
 
@@ -60,6 +61,7 @@ app.use("/api/cart", cartRouter);//giỏ hàng
 app.use('/transactions', transactionRoutes);//lịch sử giao dịch
 app.use('/checkout/guest', checkoutGuestRoutes);//thanh toán người dùng chưa đăng nhập
 app.use('/guest-cart', guestCartRouter);//giỏ hàng người dùng chưa đăng nhập
+app.use("/", forgotPasswordRouter);
 // Đăng ký
 app.get("/signup", (req, res) => {
     res.render("signup", { errors: [] });
