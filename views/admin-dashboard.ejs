@@ -128,7 +128,7 @@
             <% products.forEach(product => { %>
                 <div class="product">
                     <% if (product.image) { %>
-                        <img ="data:image/jpeg;base64,<%= product.image %>" alt="<%= product.name %>" class="product-image">
+                        <img src="data:image/jpeg;base64,<%= product.image %>" alt="<%= product.name %>" class="product-image">
                     <% } else { %>
                         <p>Không có hình ảnh.</p>
                     <% } %>

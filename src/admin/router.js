@@ -4,9 +4,10 @@ import {
     renderManageProductsPage,
     addProduct,
     updateProduct,
-    deleteProduct, renderAdminDashboard
+    deleteProduct,
 } from "../admin/controller.js"; // Import controller
 import { isAdmin } from "../middleware/authMiddleware.js"; // Middleware kiểm tra quyền admin
+import { renderAdminDashboard } from "../admin/controller.js";
 
 // Cấu hình lưu tệp tạm thời với Multer
 const storage = multer.memoryStorage();
