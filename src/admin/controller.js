@@ -1,4 +1,5 @@
 import Product from "../product/model";
+import { Transaction } from "../transaction/model.js";
 
 import fs from "fs";
 // Trang Quản lý Sản phẩm
@@ -81,5 +82,16 @@ export const renderAdminDashboard = async (req, res) => {
     } catch (error) {
         console.error("Lỗi khi hiển thị dashboard:", error);
         res.status(500).send("Đã xảy ra lỗi khi hiển thị dashboard.");
+    }
+};
+
+// Lấy danh sách đơn hàng cho Admin
+export const getAdminOrders = async (req, res) => {
+    try {
+        const transactions = await Transaction.find().populate('userId', 'email').sort({ createdAt: -1 });
+        res.render('admin-orders', { transactions });
+    } catch (error) {
+        console.error('Lỗi khi lấy danh sách đơn hàng:', error);
+        res.status(500).send("Đã xảy ra lỗi, vui lòng thử lại sau.");
     }
 };

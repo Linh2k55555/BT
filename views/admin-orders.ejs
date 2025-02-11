@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lịch sử giao dịch</title>
+    <title>Quản lý đơn hàng</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -15,25 +15,22 @@
             flex-direction: column;
             align-items: center;
         }
-
+        
         .container {
             margin-top: 20px;
             padding: 20px;
             background: rgba(0, 0, 0, 0.85);
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            max-width: 800px;
+            max-width: 1000px;
             width: 100%;
-        }
-
-        h1 {
-            text-align: center;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            background: rgba(255, 255, 255, 0.1);
         }
 
         table th, table td {
@@ -44,10 +41,6 @@
 
         table th {
             background-color: #007bff;
-        }
-
-        table td {
-            background-color: rgba(255, 255, 255, 0.1);
         }
 
         .back-btn {
@@ -71,57 +64,55 @@
 </head>
 <body>
     <div class="container">
-        <h1>Lịch sử giao dịch</h1>
+        <h1>Quản lý đơn hàng</h1>
         <% if (transactions.length > 0) { %>
         <table>
             <thead>
                 <tr>
                     <th>Ngày</th>
+                    <th>Email Khách Hàng</th>
                     <th>Tổng tiền</th>
-                    <th>Địa chỉ</th>
-                    <th>Phương thức thanh toán</th>
+                    <th>Trạng thái</th>
+                    <th>Cập nhật</th>
                 </tr>
             </thead>
             <tbody>
                 <% transactions.forEach(transaction => { %>
                 <tr>
                     <td><%= new Date(transaction.createdAt).toLocaleString('vi-VN') %></td>
+                    <td><%= transaction.userId.email %></td>
                     <td><%= transaction.total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) %></td>
-                    <td><%= `${transaction.address}, ${transaction.ward}, ${transaction.district}, ${transaction.city}` %></td>
-                    <td><%= transaction.paymentMethod === 'cod' ? 'Thanh toán khi nhận hàng' : 'Chuyển khoản' %></td>
-                    <td><%= transaction.status %></td>
                     <td>
-                        <% if (!["Đang giao", "Đã giao"].includes(transaction.status)) { %>
-                            <button onclick="cancelOrder('<%= transaction._id %>')" class="cancel-btn">Hủy đơn</button>
-                        <% } else { %>
-                            <span>Không thể hủy</span>
-                        <% } %>
+                        <select onchange="updateStatus('<%= transaction._id %>', this.value)">
+                            <option value="Chờ xác nhận" <%= transaction.status === "Chờ xác nhận" ? "selected" : "" %>>Chờ xác nhận</option>
+                            <option value="Đã xác nhận" <%= transaction.status === "Đã xác nhận" ? "selected" : "" %>>Đã xác nhận</option>
+                            <option value="Đang giao" <%= transaction.status === "Đang giao" ? "selected" : "" %>>Đang giao</option>
+                            <option value="Đã huỷ" <%= transaction.status === "Đã huỷ" ? "selected" : "" %>>Đã huỷ</option>
+                            <option value="Đã giao" <%= transaction.status === "Đã giao" ? "selected" : "" %>>Đã giao</option>
+                        </select>
                     </td>
                 </tr>
                 <% }) %>
             </tbody>
-            
-            <script>
-            function cancelOrder(transactionId) {
-                if (confirm("Bạn có chắc chắn muốn hủy đơn hàng này không?")) {
-                    fetch(`/transactions/cancel/${transactionId}`, { method: "POST" })
-                        .then(response => response.json())
-                        .then(data => {
-                            alert(data.message);
-                            location.reload();
-                        })
-                        .catch(error => console.error("Lỗi khi hủy đơn:", error));
-                }
-            }
-            </script>
-            
         </table>
         <% } else { %>
-        <p>Không có lịch sử giao dịch nào.</p>
+        <p>Không có đơn hàng nào.</p>
         <% } %>
 
-        <!-- Nút Trở về Trang chủ -->
-        <a href="/home2" class="back-btn">Trở về trang chủ</a>
+        <a href="/admin/dashboard" class="back-btn">Trở về Dashboard</a>
     </div>
+
+    <script>
+        function updateStatus(transactionId, status) {
+            fetch(`/transactions/admin/update-status/${transactionId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status })
+            })
+            .then(response => response.json())
+            .then(data => alert(data.message))
+            .catch(error => console.error("Lỗi cập nhật trạng thái:", error));
+        }
+    </script>
 </body>
 </html>

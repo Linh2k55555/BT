@@ -113,11 +113,15 @@
 <body>
     <header>
         <h1>Quản lý sản phẩm</h1>
-        <div class="action-buttons">
-            <a href="/logout">Đăng xuất</a>
-            <a href="/admin/products" class="btn-manage-products">Quản lý sản phẩm</a>
-
-        </div>
+        <header>
+            <h1>Quản lý sản phẩm</h1>
+            <div class="action-buttons">
+                <a href="/logout">Đăng xuất</a>
+                <a href="/admin/products" class="btn-manage-products">Quản lý sản phẩm</a>
+                <a href="/admin/orders" class="btn-manage-orders">Quản lý đơn hàng</a> <!-- Nút mới -->
+            </div>
+        </header>
+        
     </header>
     <div class="container">
         <% if (message) { %>

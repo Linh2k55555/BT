@@ -7,7 +7,7 @@ import {
     deleteProduct,
 } from "../admin/controller.js"; // Import controller
 import { isAdmin } from "../middleware/authMiddleware.js"; // Middleware kiểm tra quyền admin
-import { renderAdminDashboard } from "../admin/controller.js";
+import { renderAdminDashboard, getAdminOrders } from "../admin/controller.js";
 
 // Cấu hình lưu tệp tạm thời với Multer
 const storage = multer.memoryStorage();
@@ -28,5 +28,7 @@ router.post("/products/:id", isAdmin, upload.single("image"), updateProduct);
 // Route: Xóa sản phẩm
 router.get("/products/delete/:id", isAdmin, deleteProduct);
 
+// Route để xem danh sách đơn hàng
+router.get('/orders', getAdminOrders);
 
 export default router;

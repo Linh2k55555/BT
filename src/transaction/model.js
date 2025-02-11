@@ -10,6 +10,11 @@ const TransactionSchema = new mongoose.Schema({
     city: { type: String, required: true },
     total: { type: Number, required: true },
     paymentMethod: { type: String, required: true },
+    status: {
+        type: String,
+        enum: ["Chờ xác nhận", "Đã xác nhận", "Đang giao", "Đã huỷ", "Đã giao"],
+        default: "Chờ xác nhận"
+    },
     createdAt: { type: Date, default: Date.now },
 });
 
