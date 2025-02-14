@@ -7,13 +7,24 @@ export const signup = async (req, res) => {
     const { username, password, confirmPassword, email, age } = req.body;
 
     try {
-        // Kiểm tra mật khẩu chỉ chứa số
+        // Kiểm tra mật khẩu chỉ chứa chữ và số
         if (!/^[a-zA-Z0-9]+$/.test(password)) {
             return res.status(400).render("signup", { errors: ["Mật khẩu chỉ được chứa chữ và số."] });
         }
 
         if (password !== confirmPassword) {
             return res.status(400).render("signup", { errors: ["Mật khẩu và Xác nhận mật khẩu không khớp."] });
+        }
+
+        // Kiểm tra xem username hoặc email đã tồn tại chưa
+        const existingUser = await User.findOne({ username });
+        if (existingUser) {
+            return res.status(400).render("signup", { errors: ["Tên người dùng đã tồn tại, vui lòng chọn tên khác."] });
+        }
+
+        const existingEmail = await User.findOne({ email });
+        if (existingEmail) {
+            return res.status(400).render("signup", { errors: ["Email đã được sử dụng, vui lòng chọn email khác."] });
         }
 
         // Hash mật khẩu
@@ -30,10 +41,21 @@ export const signup = async (req, res) => {
         res.redirect("/signin?message=Đăng ký thành công! Vui lòng đăng nhập.");
     } catch (err) {
         console.error("Lỗi trong quá trình đăng ký:", err);
-        res.status(500).render("signup", { errors: ["Đã xảy ra lỗi, vui lòng thử lại sau.1"] });
+
+        // Kiểm tra lỗi MongoDB trùng lặp key
+        if (err.code === 11000) {
+            let errorMsg = "Đã xảy ra lỗi, vui lòng thử lại.";
+            if (err.keyPattern.username) {
+                errorMsg = "Tên người dùng đã tồn tại, vui lòng chọn tên khác.";
+            } else if (err.keyPattern.email) {
+                errorMsg = "Email đã được sử dụng, vui lòng chọn email khác.";
+            }
+            return res.status(400).render("signup", { errors: [errorMsg] });
+        }
+
+        res.status(500).render("signup", { errors: ["Đã xảy ra lỗi, vui lòng thử lại sau."] });
     }
 };
-
 // Đăng nhập
 export const signin = async (req, res) => {
     const { email, password } = req.body;
