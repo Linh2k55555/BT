@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Đăng ký</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #6a11cb, #2575fc);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #fff;
             display: flex;
             justify-content: center;
@@ -16,62 +17,116 @@
             margin: 0;
         }
         .container {
-            background: rgba(0, 0, 0, 0.7);
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
             text-align: center;
             width: 100%;
             max-width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
         }
         h1 {
-            font-size: 2rem;
+            font-size: 2.2rem;
+            margin-bottom: 30px;
+            font-weight: 600;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .errors {
+            color: #ff6b6b;
             margin-bottom: 20px;
+            padding: 10px;
+            background: rgba(255, 107, 107, 0.1);
+            border-radius: 8px;
+        }
+        .errors ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .input-group i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #764ba2;
         }
         form {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-        }
-        label {
-            text-align: left;
-            font-size: 1rem;
+            gap: 20px;
         }
         input {
-            padding: 10px 1px;
-            border-radius: 5px;
-            border: none;
+            padding: 15px 45px;
+            border-radius: 10px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
             font-size: 1rem;
             width: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+        input:focus {
+            outline: none;
+            border-color: #764ba2;
+            box-shadow: 0 0 10px rgba(118, 75, 162, 0.3);
         }
         button {
-            background-color: #6a11cb;
+            background: linear-gradient(45deg, #667eea, #764ba2);
             color: #fff;
-            font-size: 1rem;
-            padding: 10px 20px;
+            font-size: 1.1rem;
+            padding: 15px 30px;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
         button:hover {
-            background-color: #4b0082;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
         }
-        .errors {
-            color: #ff6b6b;
-            font-size: 0.9rem;
-            text-align: left;
-            margin-bottom: 10px;
+        .extra-links {
+            margin-top: 25px;
+            font-size: 0.95rem;
         }
-        ul {
-            list-style-type: none;
-            padding: 0;
+        .extra-links a {
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .extra-links a:hover {
+            color: #ddd;
+        }
+        .extra-links a::after {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 1px;
+            bottom: -2px;
+            left: 0;
+            background-color: #fff;
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        .extra-links a:hover::after {
+            transform: scaleX(1);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>Đăng ký tài khoản</h1>
+        <h1>Đăng ký</h1>
 
         <% if (errors.length > 0) { %>
             <div class="errors">
@@ -84,24 +139,37 @@
         <% } %>
 
         <form action="/api/signup" method="POST">
-            <label for="username">Tên người dùng:</label>
-            <input type="text" id="username" name="username" placeholder="Nhập tên người dùng" required>
+            <div class="input-group">
+                <i class="fas fa-user"></i>
+                <input type="text" id="username" name="username" placeholder="Nhập tên người dùng" required>
+            </div>
             
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" placeholder="Nhập email" required>
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="email" name="email" placeholder="Nhập email" required>
+            </div>
             
-            <label for="password">Mật khẩu:</label>
-            <input type="password" id="password" name="password" placeholder="Nhập mật khẩu" required>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="password" name="password" placeholder="Nhập mật khẩu" required>
+            </div>
             
-            <label for="confirmPassword">Xác nhận mật khẩu:</label>
-            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Xác nhận mật khẩu" required>
+            <div class="input-group">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Xác nhận mật khẩu" required>
+            </div>
             
-            <label for="age">Tuổi:</label>
-            <input type="number" id="age" name="age" placeholder="Nhập tuổi" required>
+            <div class="input-group">
+                <i class="fas fa-calendar"></i>
+                <input type="number" id="age" name="age" placeholder="Nhập tuổi" required>
+            </div>
             
             <button type="submit">Đăng ký</button>
-                <p>Bạn đã có tài khoản? <a href="/signin">Đăng nhập</a></p>
         </form>
+
+        <div class="extra-links">
+            <p>Bạn đã có tài khoản? <a href="/signin">Đăng nhập</a></p>
+        </div>
     </div>
 </body>
 </html>
