@@ -2,6 +2,9 @@ import Product from "../product/model.js";
 import Cart from '../cart/model.js';
 import nodemailer from 'nodemailer';
 import { Transaction } from "../transaction/model.js";
+import fs from 'fs';
+import path from 'path';
+
 //render trang home 1
 export const renderHomePage = async (req, res) => {
     try {
@@ -80,6 +83,9 @@ export const renderCheckoutPage = async (req, res) => {
     });
 };
 
+// Định đường dẫn đến ảnh QR
+const qrImagePath = path.resolve('./QR/QR.jpg');
+
 export const handleCheckout = async (req, res) => {
     console.log("Dữ liệu từ form:", req.body);
     const { fullName, phoneNumber, address, ward, district, city, paymentMethod } = req.body;
@@ -94,7 +100,6 @@ export const handleCheckout = async (req, res) => {
     }
 
     try {
-        // Lấy giỏ hàng
         const cart = await Cart.findOne({ userId }).populate('items.productId');
         if (!cart || cart.items.length === 0) {
             return res.status(400).render('checkout', {
@@ -104,13 +109,7 @@ export const handleCheckout = async (req, res) => {
             });
         }
 
-        // Tính tổng tiền
-        const total = cart.items.reduce(
-            (sum, item) => sum + item.productId.price * item.quantity,
-            0
-        );
-
-        // Lấy email từ người dùng
+        const total = cart.items.reduce((sum, item) => sum + item.productId.price * item.quantity, 0);
         const email = req.user?.email || '';
         if (!email) {
             return res.status(400).render('checkout', {
@@ -120,9 +119,7 @@ export const handleCheckout = async (req, res) => {
             });
         }
 
-        // Thời gian đặt hàng
-        const now = new Date();
-        const formattedDate = now.toLocaleString('vi-VN', {
+        const orderDate = new Date().toLocaleString('vi-VN', {
             weekday: 'long',
             year: 'numeric',
             month: 'long',
@@ -131,7 +128,6 @@ export const handleCheckout = async (req, res) => {
             minute: '2-digit',
         });
 
-        // Gửi email xác nhận
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -140,23 +136,41 @@ export const handleCheckout = async (req, res) => {
             },
         });
 
+        let emailBody = `
+            <p>Cửa hàng cafe Coffe House xin chào.</p>
+            <p>Cảm ơn bạn đã đặt hàng, ${fullName}!</p>
+            <p>Địa chỉ giao hàng của bạn là: ${address}, ${ward}, ${district}, ${city}</p>
+            <p>Số điện thoại: ${phoneNumber}</p>
+            <p>Ngày giờ đặt hàng: ${orderDate}</p>
+            <p>Tổng tiền: ${total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}</p>
+            <p>Phương thức thanh toán: ${paymentMethod === 'cod' ? 'Thanh toán khi nhận hàng' : 'Chuyển khoản'}</p>
+            <p>Chi tiết đơn hàng:</p>
+            <ul>
+                ${cart.items.map(item => `<li>${item.productId.name}: ${item.productId.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })} x ${item.quantity}</li>`).join('')}
+            </ul>
+            <p>Coffee House xin chân thành cảm ơn vì sự ủng hộ và tin tưởng của bạn</p>
+        `;
+
         const mailOptions = {
             from: process.env.EMAIL_USERNAME,
             to: email,
-            subject: 'Xác nhận đơn hàng',
-            text: `Cảm ơn bạn, ${fullName}, đã đặt hàng.
-            Tổng đơn hàng: ${total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}.
-            Địa chỉ giao hàng:
-            ${address}, ${ward}, ${district}, ${city}.
-            Số điện thoại: ${phoneNumber}.
-            Phương thức thanh toán: ${paymentMethod === 'cod' ? 'Thanh toán khi nhận hàng' : 'Chuyển khoản'}.
-            Ngày đặt hàng: ${formattedDate}.
-            `,
+            subject: 'Xác nhận đơn hàng của bạn',
+            html: emailBody,
+            attachments: []
         };
+
+        if (paymentMethod !== 'cod') {
+            mailOptions.html += `<p>Bạn vui lòng quét mã QR sau để thanh toán đơn hàng và xác nhận đơn hàng trong vòng 30 phút:</p>
+                                 <img src="cid:qrCode" alt="QR Code Chuyển Khoản" style="width:120px; height:120px;"/>`;
+            mailOptions.attachments.push({
+                filename: 'QR.jpg',
+                path: qrImagePath,
+                cid: 'qrCode'
+            });
+        }
 
         await transporter.sendMail(mailOptions);
 
-        // Lưu giao dịch vào cơ sở dữ liệu
         const transaction = new Transaction({
             userId,
             fullName,
@@ -167,16 +181,11 @@ export const handleCheckout = async (req, res) => {
             city,
             total,
             paymentMethod,
-            createdAt: now,
+            createdAt: new Date(),
         });
-
         await transaction.save();
-        console.log("Giao dịch đã được lưu vào cơ sở dữ liệu.");
 
-        // Xóa giỏ hàng sau khi thanh toán
         await Cart.deleteOne({ userId });
-
-        // Chuyển hướng về trang home2 với thông báo thành công
         res.redirect('/home2?message=Đặt hàng thành công! Kiểm tra email để biết thêm chi tiết.');
     } catch (error) {
         console.error("Lỗi khi xử lý thanh toán:", error);

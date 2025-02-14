@@ -157,7 +157,7 @@
 
     <div class="container">
         <h2>Thông tin thanh toán</h2>
-        <form action="/guest-cart/checkout" method="POST">
+        <form action="/checkout/guest" method="POST">
             <label for="fullName">Họ và Tên:</label>
             <input type="text" id="fullName" name="fullName" placeholder="Nhập họ và tên" required>
         
@@ -477,7 +477,7 @@
             };
     
             try {
-                const response = await fetch('/guest-cart/checkout', {
+                const response = await fetch('/checkout/guest', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
@@ -495,42 +495,42 @@
                 alert("Đã xảy ra lỗi khi thanh toán.");
             }
         });
-        // Xử lý submit form
-        document.querySelector("form").addEventListener("submit", async function (event) {
-    event.preventDefault();
+//         // Xử lý submit form
+//         document.querySelector("form").addEventListener("submit", async function (event) {
+//     event.preventDefault();
 
-    const formData = new FormData(this);
-    const data = {
-        fullName: formData.get("fullName"),
-        email: formData.get("email"),
-        phoneNumber: formData.get("phoneNumber"),
-        address: formData.get("address"),
-        city: formData.get("city"),
-        district: formData.get("district"),
-        ward: formData.get("ward"),
-        paymentMethod: formData.get("paymentMethod"),
-    };
+//     const formData = new FormData(this);
+//     const data = {
+//         fullName: formData.get("fullName"),
+//         email: formData.get("email"),
+//         phoneNumber: formData.get("phoneNumber"),
+//         address: formData.get("address"),
+//         city: formData.get("city"),
+//         district: formData.get("district"),
+//         ward: formData.get("ward"),
+//         paymentMethod: formData.get("paymentMethod"),
+//     };
 
-    try {
-        const response = await fetch('/guest-cart/checkout', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-        });
+//     try {
+//         const response = await fetch('/guest-cart/checkout', {
+//             method: 'POST',
+//             headers: { 'Content-Type': 'application/json' },
+//             body: JSON.stringify(data),
+//         });
 
-        const result = await response.json();
+//         const result = await response.json();
 
-        if (response.ok) {
-            alert(result.message || "Thanh toán thành công!");
-            window.location.href = result.redirect; // Chuyển hướng về trang home
-        } else {
-            alert(result.message || "Đã xảy ra lỗi khi thanh toán.");
-        }
-    } catch (error) {
-        console.error("Lỗi khi gửi yêu cầu thanh toán:", error);
-        alert("Đã xảy ra lỗi khi thanh toán.");
-    }
-});
+//         if (response.ok) {
+//             alert(result.message || "Thanh toán thành công!");
+//             window.location.href = result.redirect; // Chuyển hướng về trang home
+//         } else {
+//             alert(result.message || "Đã xảy ra lỗi khi thanh toán.");
+//         }
+//     } catch (error) {
+//         console.error("Lỗi khi gửi yêu cầu thanh toán:", error);
+//         alert("Đã xảy ra lỗi khi thanh toán.");
+//     }
+// });
 
     </script>
     
