@@ -75,6 +75,7 @@ export const deleteProduct = async (req, res) => {
         res.status(500).send("Đã xảy ra lỗi khi xóa sản phẩm.");
     }
 };
+//trang daanh sách sản phẩm
 export const renderAdminDashboard = async (req, res) => {
     try {
         const products = await Product.find(); // Lấy danh sách sản phẩm từ MongoDB
