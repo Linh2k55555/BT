@@ -10,7 +10,6 @@ import { connectDB } from "./config/db.js";
 import homeRouter from "./home/router.js";
 import logoutRouter from "./logout/router.js";
 import updateUserRouter from "./updateuser/router.js"; 
-import updateUserRouter from "./user/router.js"
 import adminRouter from "./admin/router.js";
 import cartRouter from './cart/router.js';
 import transactionRoutes from './transaction/router.js';
@@ -55,7 +54,6 @@ app.use("/api", authRouter);//người dùng
 app.use("/api", productRouter);//sản phẩm
 app.use("/", logoutRouter);//đăng xuất
 app.use("/user", updateUserRouter);//cập nhật thông tin
-app.use("/", updateUserRouter);
 app.use("/admin", adminRouter);//admin
 app.use("/api/cart", cartRouter);//giỏ hàng
 app.use('/transactions', transactionRoutes);//lịch sử giao dịch
