@@ -85,7 +85,7 @@ export const renderCheckoutPage = async (req, res) => {
 
 // Định đường dẫn đến ảnh QR
 const qrImagePath = path.resolve('./QR/QR.jpg');
-
+//thanh toán
 export const handleCheckout = async (req, res) => {
     console.log("Dữ liệu từ form:", req.body);
     const { fullName, phoneNumber, address, ward, district, city, paymentMethod } = req.body;

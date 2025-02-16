@@ -45,7 +45,7 @@ export const forgotPassword = async (req, res) => {
 
         await transporter.sendMail(mailOptions);
 
-        res.render("forgot-password", { message: "Email đặt lại mật khẩu đã được gửi! Vui lòng kiểm tra hộp thư." });
+        res.render("signin", { message: "Email đặt lại mật khẩu đã được gửi! Vui lòng kiểm tra hộp thư." });
     } catch (error) {
         console.error("Lỗi khi gửi email đặt lại mật khẩu:", error);
         res.status(500).render("forgot-password", { message: "Lỗi hệ thống, vui lòng thử lại sau!" });
