@@ -63,14 +63,3 @@ export const updateProduct = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
-//render trang admin
-export const renderAdminPage = async (req, res) => {
-    try {
-        const products = await Product.find(); 
-        res.render("admin", { products });
-    } catch (error) {
-        console.error("Error rendering admin page:", error);
-        res.status(500).send("Đã xảy ra lỗi, vui lòng thử lại sau.11");
-    }
-};
-
