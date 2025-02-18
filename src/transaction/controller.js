@@ -75,7 +75,8 @@ export const updateTransactionStatus = async (req, res) => {
 
         // Kiểm tra email trước khi gửi
         if (transaction.userId && transaction.userId.email) {
-            sendEmail(transaction.userId.email, "Cập nhật trạng thái đơn hàng", `Đơn hàng của bạn hiện có trạng thái: ${status}`);
+            sendEmail(transaction.userId.email, "Cập nhật trạng thái đơn hàng", `Cửa hàng cafe Coffe House xin chào.
+        Đơn hàng của bạn hiện có trạng thái: ${status}`);
         } else {
             console.error("❌ Không tìm thấy email của người dùng để gửi thông báo.");
         }

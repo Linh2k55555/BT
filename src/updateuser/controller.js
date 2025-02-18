@@ -57,7 +57,7 @@ export const renderUpdateUserPage = async (req, res) => {
       console.error("Lỗi khi cập nhật thông tin:", error);
       res.status(500).render("update-user", {
         user: req.session,
-        errors: ["Đã xảy ra lỗi, vui lòng thử lại sau.6"],
+        errors: ["Trùng thông tin vui lòng sửa lại."],
       });
     }
   };
